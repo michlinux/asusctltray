@@ -172,9 +172,9 @@ GFX_POWER: Dict[int, str] = {
 
 FAN_CURVES = Bijection(
     {
-        0: "balanced",
-        1: "performance",
-        2: "quiet",
+        0: "Balanced",
+        1: "Performance",
+        2: "Quiet",
     }
 )
 
@@ -237,7 +237,7 @@ class Util:
         """Requests user logout to logind via dbus"""
         session_proxy = dbus.Interface(
             dbus.SystemBus().get_object(
-                "org.freedesktop.login1", "/org/freedesktop/login1/session/self"
+                "org.freedesktop.login1", "/org/freedesktop/login1/session/auto"
             ),
             dbus_interface="org.freedesktop.login1.Session",
         )
@@ -466,7 +466,8 @@ class FanCurveController(Controller):
 
     @property
     def items(self):
-        return [FAN_CURVES[i] for i in self.proxy.Profiles()]
+        #return [FAN_CURVES[i] for i in self.proxy.Profiles()]
+        return [str(i) for i in self.proxy.Profiles()]
 
     @property
     def proxy(self):
@@ -483,11 +484,13 @@ class FanCurveController(Controller):
 
     @property
     def active_item(self):
-        return self.items[self.proxy.ActiveProfile()]
+        #return self.items[self.proxy.ActiveProfile()]
+        return str(self.proxy.ActiveProfile())
 
     @on_widget_active_strict
     def on_activation(self, widget: Gtk.MenuItem):
-        self.proxy.SetActiveProfile(FAN_CURVES[widget.get_label()])
+        #self.proxy.SetActiveProfile(FAN_CURVES[widget.get_label()])
+        self.proxy.SetActiveProfile(widget.get_label())
 
 
 class GfxController(Controller):
